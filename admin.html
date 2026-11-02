@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>MV Dugar — Signature Admin</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+<style>
+:root{
+  --bg:#EEF0F2; --card:#FFFFFF; --ink:#16181C; --mute:#6B717A; --faint:#9AA0A8;
+  --line:#E3E5E8; --line2:#D3D6DA; --accent:#ED1821; --accent-soft:#FDECEC;
+  --ok:#1F7A3A; --ok-soft:#E7F4EC; --radius:10px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+button,input,textarea,select{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px 20px;background:#fff;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:34px;height:34px}
+.brand b{display:block;font-size:16px}
+.brand small{display:block;font:11px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.08em;color:var(--mute)}
+.spacer{flex:1}
+.pill{font-size:12px;padding:4px 10px;border-radius:99px;border:1px solid var(--line2);color:var(--mute);white-space:nowrap}
+.pill.dirty{background:var(--accent-soft);border-color:#F6B9BB;color:#B3121A}
+.pill.clean{background:var(--ok-soft);border-color:#BFE0CB;color:var(--ok)}
+button{cursor:pointer;border-radius:8px;border:1px solid var(--line2);background:#fff;padding:8px 14px}
+button:hover{border-color:#B9BDC3}
+button.primary{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600}
+button.primary:hover{background:#000}
+button.ghost{background:transparent}
+button:disabled{opacity:.45;cursor:default}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,46%);gap:20px;padding:20px;align-items:start}
+@media (max-width:1000px){main{grid-template-columns:minmax(0,1fr)} aside{position:static!important}}
+@media (max-width:600px){main{padding:12px 16px} header{flex-wrap:wrap;padding:10px 16px}}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{border:0;background:transparent;padding:8px 14px;border-radius:99px;color:var(--mute);font-weight:500}
+.tabs button.on{background:var(--ink);color:#fff}
+.hint{color:var(--mute);margin:0 0 14px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.cardhead{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cardhead input.ghead{font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;border:1px dashed transparent;background:transparent;padding:4px 6px;border-radius:6px;flex:1;min-width:0}
+.cardhead input.ghead:hover,.cardhead input.ghead:focus{border-color:var(--line2);background:#fff;outline:none}
+.count{font-size:12px;color:var(--faint)}
+.grip{cursor:grab;color:var(--faint);font-size:16px;line-height:1;padding:6px 4px;user-select:none;touch-action:none}
+.grip:active{cursor:grabbing}
+ul.list{list-style:none;margin:0;padding:0;min-height:12px}
+ul.list li{display:flex;align-items:center;gap:8px;padding:6px;border:1px solid var(--line);border-radius:8px;background:#fff;margin-bottom:6px}
+ul.list li .f{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+@media (max-width:600px){ul.list li .f{grid-template-columns:1fr}}
+label.mini{display:block;font-size:11px;color:var(--faint);margin:0 0 2px 2px}
+input[type=text],input[type=number],input[type=url],textarea{width:100%;border:1px solid var(--line2);border-radius:7px;padding:7px 9px;background:#fff}
+input:focus,textarea:focus{outline:2px solid #16181C22;border-color:#8E949C}
+input:disabled{background:#F5F6F7;color:var(--faint)}
+textarea{resize:vertical;min-height:58px}
+.x{border:0;background:transparent;color:var(--faint);font-size:18px;padding:4px 8px;line-height:1}
+.x:hover{color:var(--accent)}
+.add{border-style:dashed;color:var(--mute);background:transparent;width:100%;margin-top:4px}
+.add.big{padding:12px}
+.tag{font-size:11px;padding:2px 7px;border-radius:99px;background:#F1F2F4;color:var(--mute);white-space:nowrap}
+.sortable-ghost{opacity:.35}
+.sortable-chosen{box-shadow:0 6px 20px #0002}
+/* logos */
+ul.grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;min-height:70px;border-radius:8px}
+ul.grid:empty{border:1px dashed var(--line2)}
+ul.grid:empty::before{content:"Drag logos here";color:var(--faint);font-size:12px;display:flex;align-items:center;justify-content:center;grid-column:1/-1;min-height:70px}
+.tile{position:relative;border:1px solid var(--line);border-radius:8px;background:#fff;padding:8px;display:flex;flex-direction:column;gap:6px}
+.tile .imgbox{height:64px;display:flex;align-items:center;justify-content:center;background:#FAFAFB;border-radius:6px;cursor:grab;touch-action:none}
+.tile .imgbox img{max-width:90%;max-height:52px}
+.tile .row{display:flex;gap:6px;align-items:center}
+.tile input[type=text]{padding:5px 7px;font-size:13px}
+.tile input[type=color]{width:30px;height:28px;padding:0;border:1px solid var(--line2);border-radius:6px;background:#fff;flex:none}
+.tile .x{position:absolute;top:2px;right:2px;font-size:16px}
+.tile .new{position:absolute;top:6px;left:6px;font-size:10px;background:var(--accent);color:#fff;border-radius:99px;padding:1px 6px}
+.tile.filehover,.drop.filehover{outline:2px dashed var(--accent);outline-offset:2px}
+.drop{border:2px dashed var(--line2);border-radius:var(--radius);padding:22px;text-align:center;color:var(--mute);background:#FAFAFB;cursor:pointer}
+.drop b{color:var(--ink)}
+.master{display:flex;gap:12px;align-items:center}
+.master .tile{width:180px;flex:none}
+/* form rows */
+.frow{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid #F1F2F4}
+.frow:last-child{border-bottom:0}
+.frow > span{color:var(--mute);font-size:13px}
+@media (max-width:600px){.frow{grid-template-columns:1fr;gap:4px}}
+.num{display:flex;align-items:center;gap:6px;max-width:150px}
+.num small{color:var(--faint)}
+.colour{display:flex;gap:8px;align-items:center;max-width:220px}
+.colour input[type=color]{width:38px;height:32px;padding:0;border:1px solid var(--line2);border-radius:7px;background:#fff;flex:none}
+.switch{position:relative;width:40px;height:22px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.switch span{position:absolute;inset:0;background:#CDD1D6;border-radius:99px;transition:.15s;cursor:pointer}
+.switch span::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s}
+.switch input:checked + span{background:var(--ok)}
+.switch input:checked + span::after{transform:translateX(18px)}
+h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 6px}
+/* preview */
+aside{position:sticky;top:76px}
+.phead{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute);margin-bottom:8px}
+.phead a{margin-left:auto;color:var(--ink)}
+#pbox{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;position:relative}
+#preview{border:0;width:1060px;transform-origin:0 0;display:block}
+.banner{background:#FFF7E0;border:1px solid #F1D98B;border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.err{color:#B3121A}
+/* dialog */
+dialog{border:0;border-radius:14px;padding:0;width:min(560px,calc(100vw - 32px));box-shadow:0 20px 60px #0004}
+dialog::backdrop{background:#16181C66}
+.dlg{padding:22px}
+.dlg h2{margin:0 0 4px;font-size:18px}
+.step{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.step .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step p{margin:0 0 8px}
+.step .btns{display:flex;gap:8px;flex-wrap:wrap}
+.step a.btn{display:inline-block;text-decoration:none;border:1px solid var(--line2);border-radius:8px;padding:7px 12px;color:var(--ink)}
+.step a.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.files{font:12px ui-monospace,Menlo,Consolas,monospace;color:var(--mute)}
+.dlgfoot{display:flex;justify-content:flex-end;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
+footer{padding:0 20px 30px;color:var(--faint);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><img src="logos/mvdugar.png" alt=""><div><b>Signature Admin</b><small>MV DUGAR GROUP</small></div></div>
+  <span id="status" class="pill">Loading…</span>
+  <div class="spacer"></div>
+  <button id="btnReset" class="ghost" disabled>Discard changes</button>
+  <button id="btnSave" class="primary" disabled>Save changes</button>
+</header>
+
+<main>
+  <section>
+    <div id="banner"></div>
+    <nav class="tabs" id="tabs">
+      <button data-tab="divisions" class="on">Divisions</button>
+      <button data-tab="logos">Brand logos</button>
+      <button data-tab="offices">Offices</button>
+      <button data-tab="wording">Wording</button>
+      <button data-tab="look">Look &amp; spacing</button>
+    </nav>
+    <div id="pane"></div>
+  </section>
+  <aside>
+    <div class="phead"><span>Live preview — the real page, with your changes</span><a href="./" target="_blank" rel="noopener">Open live site ↗</a></div>
+    <div id="pbox"><iframe id="preview" title="Preview"></iframe></div>
+  </aside>
+</main>
+<footer>Changes stay in this browser until you press <b>Save changes</b> and upload the file to GitHub. Nobody else sees them before that.</footer>
+
+<dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
+<input type="file" id="filePick" accept="image/png,image/jpeg,image/svg+xml,image/webp" multiple hidden>
+
+<script>
+/* ===================== helpers ===================== */
+const $ = s => document.querySelector(s);
+function h(t, p, ...kids){
+  const e = document.createElement(t);
+  if(p) for(const [a,v] of Object.entries(p)){
+    if(v == null || v === false) continue;
+    if(a.startsWith("on")) e.addEventListener(a.slice(2), v);
+    else if(a === "class") e.className = v;
+    else if(a === "value") e.value = v;
+    else if(a === "checked") e.checked = v;
+    else if(a === "text") e.textContent = v;
+    else e.setAttribute(a, v === true ? "" : v);
+  }
+  for(const c of kids.flat()){ if(c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+const slug = s => (s||"").toLowerCase().replace(/&/g,"and").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"") || "item";
+const keyslug = s => (s||"").toLowerCase().replace(/\.[a-z0-9]+$/,"").replace(/[^a-z0-9]+/g,"") || "logo";
+function uniq(base, taken){ let k = base, i = 2; while(taken.has(k)) k = base + i++; return k; }
+const titleCase = s => s.replace(/\.[a-z0-9]+$/i,"").replace(/[-_]+/g," ").replace(/\b\w/g, c => c.toUpperCase());
+const getPath = (o,p) => p.split(".").reduce((a,k)=>a==null?a:a[k], o);
+function setPath(o,p,v){ const ks=p.split("."); const last=ks.pop(); const t=ks.reduce((a,k)=>a[k]??(a[k]={}),o); t[last]=v; }
+const toHex = c => /^#[0-9a-f]{6}$/i.test(c||"") ? c : (/^#[0-9a-f]{3}$/i.test(c||"") ? "#"+c.slice(1).split("").map(x=>x+x).join("") : "#000000");
+function store(k,v){ try{ v===undefined ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function load(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } }
+
+/* repo links for the save dialog */
+const REPO = (() => {
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/i);
+  const repo = location.pathname.split("/").filter(Boolean)[0];
+  if(m && repo) return "https://github.com/" + m[1] + "/" + repo;
+  return "https://github.com/ShubhamDugar1234/MVDugar-Signature";
+})();
+
+/* ===================== state ===================== */
+let C = null;          // the draft config
+let ORIG = "";         // config.json as it is live
+let PENDING = {};      // new/replaced logos: key -> PNG data URL
+let TAB = "divisions";
+const DRAFT_KEY = "mvd-sig-admin-draft";
+
+async function boot(){
+  try{
+    const r = await fetch("config.json?t=" + Date.now(), {cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    const c = await r.json();
+    ORIG = JSON.stringify(c);
+    C = c;
+  }catch(e){
+    $("#pane").append(h("div",{class:"card err"},"Couldn't load config.json (" + e.message + "). Open this page from the published site, next to config.json."));
+    $("#status").textContent = "Not loaded";
+    return;
+  }
+  const d = load(DRAFT_KEY);
+  if(d && d.cfg){
+    if(d.base === ORIG){ C = d.cfg; PENDING = d.pending || {}; }
+    else if(JSON.stringify(d.cfg) !== ORIG){
+      $("#banner").append(h("div",{class:"banner"},
+        h("span",{style:"flex:1;min-width:200px"},"You have unsaved edits from before the live settings last changed."),
+        h("button",{onclick:()=>{ C = d.cfg; PENDING = d.pending||{}; $("#banner").innerHTML=""; touch(true); }},"Restore my edits"),
+        h("button",{class:"ghost",onclick:()=>{ store(DRAFT_KEY); $("#banner").innerHTML=""; }},"Throw them away")));
+    }
+  }
+  $("#tabs").addEventListener("click", e => {
+    const b = e.target.closest("button[data-tab]"); if(!b) return;
+    TAB = b.dataset.tab;
+    document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
+    render();
+  });
+  $("#btnSave").onclick = openSave;
+  $("#btnReset").onclick = () => {
+    if(!confirm("Throw away all your changes and go back to the live settings?")) return;
+    C = JSON.parse(ORIG); PENDING = {}; store(DRAFT_KEY); touch(true);
+  };
+  touch(true);
+}
+
+function isDirty(){ return JSON.stringify(C) !== ORIG || Object.keys(PENDING).length > 0; }
+
+function touch(rerender){
+  const dirty = isDirty();
+  const st = $("#status");
+  st.textContent = dirty ? "Unsaved changes" : "Matches live site";
+  st.className = "pill " + (dirty ? "dirty" : "clean");
+  $("#btnSave").disabled = !dirty; $("#btnReset").disabled = !dirty;
+  if(dirty) store(DRAFT_KEY, {base:ORIG, cfg:C, pending:PENDING}); else store(DRAFT_KEY);
+  if(rerender) render();
+  schedulePreview();
+}
+
+/* ===================== rendering ===================== */
+function render(){
+  const pane = $("#pane");
+  const y = window.scrollY;
+  pane.innerHTML = "";
+  pane.append(({divisions:renderDivisions, logos:renderLogos, offices:renderOffices, wording:renderWording, look:renderLook})[TAB]());
+  window.scrollTo(0, y);
+}
+
+function textIn(obj, key, ph, extra){
+  return h("input",Object.assign({type:"text", value:obj[key] ?? "", placeholder:ph||"", oninput:e=>{ obj[key]=e.target.value; touch(); }}, extra||{}));
+}
+
+/* ---------- divisions ---------- */
+function renderDivisions(){
+  const wrap = h("div");
+  wrap.append(h("p",{class:"hint"},"Drag ⠿ to reorder, or to move a division under another heading. The button is what staff click; the signature line is the grey line printed under their designation."));
+  const groups = [];
+  C.divisions.forEach(d => { if(!groups.includes(d.group)) groups.push(d.group); });
+  const gl = h("div");
+  groups.forEach(g => {
+    const items = C.divisions.filter(d => d.group === g);
+    const ul = h("ul",{class:"list","data-group":g}, items.map(divRow));
+    const gin = h("input",{class:"ghead",value:g,title:"Rename this heading",onchange:e=>{
+      const v = e.target.value.trim() || g;
+      C.divisions.forEach(x => { if(x.group === g) x.group = v; });
+      touch(true);
+    }});
+    gl.append(h("div",{class:"card"},
+      h("div",{class:"cardhead"}, h("span",{class:"grip ghandle",title:"Drag to move this whole heading"},"⠿"), gin, h("span",{class:"count"}, items.length + (items.length===1?" division":" divisions"))),
+      ul,
+      h("button",{class:"add",onclick:()=>addDivision(g)},"+ Add division under " + g)));
+    Sortable.create(ul,{group:"divs",handle:".grip",animation:150,onEnd:syncDivs});
+  });
+  Sortable.create(gl,{handle:".ghandle",animation:150,onEnd:syncDivs});
+  wrap.append(gl, h("button",{class:"add big",onclick:()=>{
+    const taken = new Set(C.divisions.map(d=>d.group));
+    addDivision(uniq("New heading", taken));
+  }},"+ Add a new heading"));
+  return wrap;
+}
+function divRow(d){
+  const lineIn = d.custom
+    ? h("input",{type:"text",value:"Staff type their own",disabled:true})
+    : textIn(d,"line","Same as button");
+  const nameIn = h("input",{type:"text",value:d.name,placeholder:"Division name",oninput:e=>{
+    const old = d.name; d.name = e.target.value;
+    if(!d.custom && (d.line === old || !d.line)){ d.line = d.name; lineIn.value = d.name; }
+    touch();
+  }});
+  return h("li",{"data-id":d.id},
+    h("span",{class:"grip",title:"Drag"},"⠿"),
+    h("div",{class:"f"},
+      h("div",null,h("label",{class:"mini"},"Button"),nameIn),
+      h("div",null,h("label",{class:"mini"},"Signature line"),lineIn)),
+    d.custom ? h("span",{class:"tag",title:"This option lets staff type their own wording"},"type-your-own") : null,
+    h("button",{class:"x",title:"Remove",onclick:()=>{
+      if(d.custom && !confirm("This is the 'type it yourself' option. Remove it anyway?")) return;
+      C.divisions = C.divisions.filter(x => x !== d); touch(true);
+    }},"×"));
+}
+function addDivision(group){
+  const taken = new Set(C.divisions.map(d=>d.id));
+  const d = {id:uniq("division", taken), group, name:"New division", line:"New division"};
+  // insert after the last item of that group
+  let at = -1; C.divisions.forEach((x,i)=>{ if(x.group===group) at=i; });
+  C.divisions.splice(at < 0 ? C.divisions.length : at+1, 0, d);
+  touch(true);
+  const inp = document.querySelector(`li[data-id="${d.id}"] input`); if(inp){ inp.focus(); inp.select(); }
+}
+function syncDivs(){
+  const by = Object.fromEntries(C.divisions.map(d=>[d.id,d]));
+  const out = [];
+  document.querySelectorAll("#pane ul[data-group]").forEach(ul =>
+    ul.querySelectorAll("li[data-id]").forEach(li => { const d = by[li.dataset.id]; if(d){ d.group = ul.dataset.group; out.push(d); } }));
+  C.divisions = out; touch(true);
+}
+
+/* ---------- logos ---------- */
+const logoSrc = k => PENDING[k] || ((C.hostedBase || "logos/") + k + ".png");
+function renderLogos(){
+  const wrap = h("div");
+  wrap.append(h("p",{class:"hint"},"Drag logos between headings to reorder them. Drop a new image anywhere in the grey box below to add a brand, or drop an image onto an existing logo to replace it."));
+
+  const mk = C.masterKey, m = C.logos[mk];
+  if(m) wrap.append(h("div",{class:"card"},
+    h("h3",null,"Group logo — on every signature"),
+    h("div",{class:"master"}, logoTile(mk,"master"),
+      h("div",{style:"flex:1;min-width:0"},
+        h("div",{class:"frow"},h("span",null,"Most brand logos a person can tick"),
+          h("div",{class:"num"},h("input",{type:"number",min:0,max:12,value:C.design.maxBrands,oninput:e=>{C.design.maxBrands=+e.target.value||0;touch();}})))))));
+
+  const used = new Set([mk]);
+  C.brandGroups.forEach((g,gi) => {
+    g.keys = g.keys.filter(k => C.logos[k]);
+    g.keys.forEach(k => used.add(k));
+    const ul = h("ul",{class:"grid","data-gi":gi}, g.keys.map(k => logoTile(k,"group",g)));
+    wrap.append(h("div",{class:"card"},
+      h("div",{class:"cardhead"},
+        h("input",{class:"ghead",value:g.label,title:"Rename this heading",oninput:e=>{g.label=e.target.value;touch();}}),
+        h("span",{class:"count"}, g.keys.length + " logos"),
+        h("button",{class:"x",title:"Remove this heading (its logos move to 'Not shown')",onclick:()=>{ C.brandGroups.splice(gi,1); touch(true); }},"×")),
+      ul));
+    Sortable.create(ul,{group:"logos",animation:150,handle:".imgbox",onEnd:syncLogos});
+  });
+  wrap.append(h("button",{class:"add",onclick:()=>{ C.brandGroups.push({label:"New heading",keys:[]}); touch(true); }},"+ Add a logo heading"));
+
+  const spare = Object.keys(C.logos).filter(k => !used.has(k));
+  const tray = h("ul",{class:"grid","data-gi":"tray"}, spare.map(k => logoTile(k,"tray")));
+  Sortable.create(tray,{group:"logos",animation:150,handle:".imgbox",onEnd:syncLogos});
+  const drop = h("div",{class:"drop",onclick:()=>{ pickTarget=null; $("#filePick").click(); }},
+    h("b",null,"Drop logo images here"), h("br"), "or click to choose · PNG works best, transparent background, at least 200px wide");
+  fileDrop(drop, files => addLogoFiles(files, null));
+  wrap.append(h("div",{class:"card",style:"margin-top:12px"},
+    h("h3",null,"Not shown · drag into a heading to use"), tray, h("div",{style:"height:10px"}), drop));
+  return wrap;
+}
+function logoTile(k, where, group){
+  const L = C.logos[k];
+  const tile = h("li",{class:"tile","data-key":k},
+    PENDING[k] ? h("span",{class:"new"},"new image") : null,
+    h("div",{class:"imgbox",title: where==="master" ? "" : "Drag to move"}, h("img",{src:logoSrc(k),alt:L.label})),
+    h("input",{type:"text",value:L.label,title:"Brand name (also written into the signature line)",oninput:e=>{L.label=e.target.value;touch();}}),
+    h("div",{class:"row"},
+      h("input",{type:"color",value:toHex(L.accent),title:"Brand colour",oninput:e=>{L.accent=e.target.value;touch();}}),
+      h("input",{type:"text",value:L.url||"",placeholder:"Link (optional)",title:"Where the logo links to",oninput:e=>{L.url=e.target.value;touch();}})),
+    where==="group" ? h("button",{class:"x",title:"Take out of this heading",onclick:()=>{ group.keys = group.keys.filter(x=>x!==k); touch(true); }},"×") : null,
+    where==="tray" ? h("button",{class:"x",title:"Delete this brand",onclick:()=>{
+      if(!confirm("Delete " + L.label + " from the generator?")) return;
+      delete C.logos[k]; delete PENDING[k]; touch(true); }},"×") : null);
+  fileDrop(tile, files => addLogoFiles(files.slice(0,1), k));
+  return tile;
+}
+function syncLogos(){
+  C.brandGroups.forEach((g,i) => {
+    const ul = document.querySelector(`#pane ul[data-gi="${i}"]`);
+    if(ul) g.keys = [...ul.querySelectorAll("li[data-key]")].map(li => li.dataset.key);
+  });
+  touch(true);
+}
+let pickTarget = null;
+$("#filePick").addEventListener("change", e => { addLogoFiles([...e.target.files], pickTarget); e.target.value = ""; });
+function fileDrop(el, cb){
+  const isFiles = e => e.dataTransfer && [...e.dataTransfer.types].includes("Files");
+  el.addEventListener("dragover", e => { if(!isFiles(e)) return; e.preventDefault(); e.stopPropagation(); el.classList.add("filehover"); });
+  el.addEventListener("dragleave", () => el.classList.remove("filehover"));
+  el.addEventListener("drop", e => {
+    if(!isFiles(e)) return; e.preventDefault(); e.stopPropagation(); el.classList.remove("filehover");
+    const files = [...e.dataTransfer.files].filter(f => /^image\//.test(f.type));
+    if(files.length) cb(files);
+  });
+}
+// stop the browser opening a file dropped outside a target
+window.addEventListener("dragover", e => { if([...(e.dataTransfer?.types||[])].includes("Files")) e.preventDefault(); });
+window.addEventListener("drop", e => { if([...(e.dataTransfer?.types||[])].includes("Files")) e.preventDefault(); });
+
+async function addLogoFiles(files, replaceKey){
+  for(const f of files){
+    try{
+      const img = await loadImg(f);
+      const nw = img.naturalWidth || 300, nh = img.naturalHeight || 150, r = nw/nh;
+      const D = C.design, T = D.fitTarget || 52;
+      let w = Math.sqrt(T*T*r), hh = w / r;
+      if(hh > (D.fitMaxH||56)){ hh = D.fitMaxH||56; w = hh*r; }
+      if(w > (D.fitMaxW||150)){ w = D.fitMaxW||150; hh = w/r; }
+      w = Math.round(w); hh = Math.round(hh);
+      const cv = document.createElement("canvas"); cv.width = w*2; cv.height = hh*2;
+      const cx = cv.getContext("2d"); cx.imageSmoothingQuality = "high"; cx.drawImage(img,0,0,cv.width,cv.height);
+      const url = cv.toDataURL("image/png");
+      let k = replaceKey;
+      if(!k){
+        k = uniq(keyslug(f.name), new Set(Object.keys(C.logos)));
+        C.logos[k] = {label:titleCase(f.name), w, h:hh, accent:dominant(img), url:""};
+      }else{
+        Object.assign(C.logos[k], {w, h:hh});
+      }
+      PENDING[k] = url;
+    }catch(e){ alert("Couldn't read " + f.name); }
+  }
+  touch(true);
+}
+function loadImg(f){ return new Promise((res,rej)=>{ const u=URL.createObjectURL(f); const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=u; }); }
+function dominant(img){
+  try{
+    const c = document.createElement("canvas"); c.width = c.height = 40;
+    const x = c.getContext("2d"); x.drawImage(img,0,0,40,40);
+    const d = x.getImageData(0,0,40,40).data, b = {};
+    for(let i=0;i<d.length;i+=4){
+      if(d[i+3] < 128) continue;
+      const R=d[i],G=d[i+1],B=d[i+2], mx=Math.max(R,G,B), mn=Math.min(R,G,B);
+      if(mx > 235 && mn > 220) continue;            // white
+      if(mx - mn < 40) continue;                    // grey
+      const q = (R>>4)+","+(G>>4)+","+(B>>4); b[q] = (b[q]||0)+1;
+    }
+    const top = Object.entries(b).sort((a,c)=>c[1]-a[1])[0];
+    if(!top) return "#7A7A7A";
+    return "#" + top[0].split(",").map(n=>((+n<<4)+8).toString(16).padStart(2,"0")).join("").toUpperCase();
+  }catch(e){ return "#7A7A7A"; }
+}
+
+/* ---------- offices ---------- */
+function renderOffices(){
+  const wrap = h("div");
+  wrap.append(h("p",{class:"hint"},"The office list in step 4. Picking an office fills in the address line. Drag ⠿ to reorder."));
+  const ul = h("ul",{class:"list"}, C.branches.map(b => {
+    const custom = b.id === "other";
+    return h("li",{"data-id":b.id},
+      h("span",{class:"grip"},"⠿"),
+      h("div",{class:"f"},
+        h("div",null,h("label",{class:"mini"},"Shown in the list"),textIn(b,"label","Office name")),
+        h("div",null,h("label",{class:"mini"},"Address printed"), custom ? h("input",{type:"text",value:"Staff type their own",disabled:true}) : textIn(b,"address","Street, City, Nepal"))),
+      custom ? h("span",{class:"tag"},"type-your-own") : null,
+      h("button",{class:"x",title:"Remove",onclick:()=>{ C.branches = C.branches.filter(x=>x!==b); touch(true); }},"×"));
+  }));
+  Sortable.create(ul,{handle:".grip",animation:150,onEnd:()=>{
+    const by = Object.fromEntries(C.branches.map(b=>[b.id,b]));
+    C.branches = [...ul.querySelectorAll("li")].map(li=>by[li.dataset.id]); touch(true);
+  }});
+  wrap.append(h("div",{class:"card"}, ul, h("button",{class:"add",onclick:()=>{
+    const b = {id:uniq("office", new Set(C.branches.map(x=>x.id))), label:"New office", address:""};
+    const oi = C.branches.findIndex(x=>x.id==="other");
+    C.branches.splice(oi < 0 ? C.branches.length : oi, 0, b); touch(true);
+    const inp = document.querySelector(`li[data-id="${b.id}"] input`); if(inp){ inp.focus(); inp.select(); }
+  }},"+ Add office")));
+  return wrap;
+}
+
+/* ---------- wording ---------- */
+const WORD_NAMES = {
+  pageTitle:"Page title", org:"Organisation name", step1:"Step 1 heading", step2:"Step 2 heading", step3:"Step 3 heading", step4:"Step 4 heading",
+  lockedNote:"Group logo note", lockedPill:"Group logo badge", customLabel:"Own-wording field label", customNote:"Own-wording help text",
+  brandNote:"Brand logos help text", fName:"Name field", fTitle:"Designation field", fTeam:"Team field", fMobile:"Mobile field", fDirect:"Direct line field",
+  fEmail:"Email field", fBranch:"Branch field", fAddress:"Address field", addrNote:"Address help text", btnCopy:"Copy button", btnLink:"Pre-filled link button",
+  btnFile:"Outlook button", fWebsite:"Website field"
+};
+function renderWording(){
+  const wrap = h("div");
+  wrap.append(h("p",{class:"hint"},"Every piece of text on the generator page."));
+  const card = h("div",{class:"card"});
+  Object.keys(C.labels).forEach(k => {
+    const v = C.labels[k] || "";
+    const input = v.length > 60
+      ? h("textarea",{oninput:e=>{C.labels[k]=e.target.value;touch();}}, v)
+      : textIn(C.labels, k);
+    card.append(h("div",{class:"frow"}, h("span",null, WORD_NAMES[k] || titleCase(k)), input));
+  });
+  wrap.append(card);
+  return wrap;
+}
+
+/* ---------- look ---------- */
+const LOOK = [
+  ["Website & accent colour", [["brand.site","Website shown"],["brand.siteUrl","Website link"],["brand.groupAccent","Accent colour (designation & bar)"],["design.showWebsite","Show the website line"]]],
+  ["Text", [["design.fontStack","Font"],["design.nameSize","Name size"],["design.nameColor","Name colour"],["design.titleSize","Designation size"],
+            ["design.lineSize","Division line size"],["design.lineColor","Division line colour"],["design.contactSize","Phone & email size"],["design.contactColor","Phone & email colour"],
+            ["design.labelColor","M / T / E letter colour"],["design.addrSize","Address size"],["design.addrColor","Address colour"]]],
+  ["Lines", [["design.showRule","Thin line under the name"],["design.ruleWidth","Thin line width"],["design.ruleColor","Thin line colour"],["design.ruleGapTop","Space above thin line"],["design.ruleGapBottom","Space below thin line"],
+             ["design.showAccentBar","Red bar above logos"],["design.accentBarW","Red bar width"],["design.accentBarH","Red bar thickness"],["design.accentGapTop","Space above red bar"],
+             ["design.showDivider","Divider between logos"],["design.dividerColor","Divider colour"]]],
+  ["Logo spacing", [["design.stripGapTop","Space above logos"],["design.logoGap","Gap between brand logos"],["design.groupGap","Gap after group logo"]]],
+  ["Little labels", [["design.mobileLabel","Mobile letter"],["design.directLabel","Direct line letter"],["design.emailLabel","Email letter"],["design.webLabel","Website letter"],
+                     ["design.sep","Separator"],["design.brandSep","Brand name separator"],["design.emptyLinePrompt","Text before a division is picked"]]],
+  ["Logo sizing for new uploads (advanced)", [["design.fitTarget","Target size"],["design.fitMinH","Min height"],["design.fitMaxH","Max height"],["design.fitMaxW","Max width"]]]
+];
+function renderLook(){
+  const wrap = h("div");
+  wrap.append(h("p",{class:"hint"},"Sizes are in pixels. Watch the preview on the right — pick a division there to see the full signature."));
+  const listed = new Set(["design.maxBrands"]);
+  const sections = LOOK.map(s => (s[1].forEach(f=>listed.add(f[0])), s));
+  const extra = Object.keys(C.design).map(k=>"design."+k).filter(p=>!listed.has(p)).map(p=>[p,titleCase(p.split(".")[1].replace(/([A-Z])/g," $1"))]);
+  if(extra.length) sections.push(["Other", extra]);
+  sections.forEach(([title, fields]) => {
+    const card = h("div",{class:"card"}, h("h3",null,title));
+    fields.forEach(([p, name]) => { const v = getPath(C,p); if(v === undefined) return; card.append(h("div",{class:"frow"}, h("span",null,name), field(p,v))); });
+    wrap.append(card);
+  });
+  return wrap;
+}
+function field(p, v){
+  const set = x => { setPath(C,p,x); touch(); };
+  if(typeof v === "boolean"){
+    return h("label",{class:"switch"}, h("input",{type:"checkbox",checked:v,onchange:e=>set(e.target.checked)}), h("span"));
+  }
+  if(typeof v === "number"){
+    return h("div",{class:"num"}, h("input",{type:"number",value:v,step:1,oninput:e=>{ if(e.target.value!=="") set(+e.target.value); }}), h("small",null,"px"));
+  }
+  if(typeof v === "string" && /^#[0-9a-f]{3,6}$/i.test(v)){
+    const txt = h("input",{type:"text",value:v,maxlength:7,oninput:e=>{ if(/^#[0-9a-f]{6}$/i.test(e.target.value)){ pick.value=e.target.value; set(e.target.value.toUpperCase()); } }});
+    const pick = h("input",{type:"color",value:toHex(v),oninput:e=>{ txt.value=e.target.value.toUpperCase(); set(e.target.value.toUpperCase()); }});
+    return h("div",{class:"colour"}, pick, txt);
+  }
+  return h("input",{type:"text",value:v,oninput:e=>set(e.target.value)});
+}
+
+/* ===================== live preview ===================== */
+let SITE_HTML = null, pvTimer = null, pvScroll = 0;
+window.__draft = () => C;
+window.__pending = () => PENDING;
+function schedulePreview(){ clearTimeout(pvTimer); pvTimer = setTimeout(renderPreview, 350); }
+async function renderPreview(){
+  if(!SITE_HTML){
+    try{ SITE_HTML = await (await fetch("index.html?t="+Date.now(),{cache:"no-store"})).text(); }
+    catch(e){ $("#pbox").innerHTML = "<p class='hint' style='padding:14px'>Preview unavailable.</p>"; return; }
+  }
+  const base = location.href.replace(/[?#].*$/,"").replace(/[^/]*$/,"");
+  const inject = '<base href="' + base + '"><script>(function(){var P=parent,f0=window.fetch.bind(window);'
+    + 'window.fetch=function(u,o){if(String(u).indexOf("config.json")===0)return Promise.resolve(new Response(JSON.stringify(P.__draft()),{status:200,headers:{"Content-Type":"application/json"}}));return f0(u,o)};'
+    + 'var pend=P.__pending();function fix(root){if(!root||!root.querySelectorAll)return;var l=root.tagName==="IMG"?[root]:root.querySelectorAll("img");'
+    + 'for(var i=0;i<l.length;i++){var s=l[i].getAttribute("src")||"";if(s.indexOf("data:")===0)continue;var m=s.match(/([a-z0-9_-]+)\\.png(\\?.*)?$/i);if(m&&pend[m[1]])l[i].src=pend[m[1]];}}'
+    + 'new MutationObserver(function(ms){ms.forEach(function(m){if(m.type==="attributes")fix(m.target);m.addedNodes&&m.addedNodes.forEach(function(a){if(a.nodeType===1)fix(a)})})}).observe(document,{subtree:true,childList:true,attributes:true,attributeFilter:["src"]});'
+    + '})();<\/script>';
+  const html = SITE_HTML.replace(/<head[^>]*>/i, m => m + inject);
+  const fr = $("#preview");
+  try{ pvScroll = fr.contentWindow ? fr.contentWindow.scrollY : 0; }catch(e){}
+  fr.onload = () => { try{ fr.contentWindow.scrollTo(0, pvScroll); }catch(e){} fitPreview(); setTimeout(fitPreview, 400); };
+  fr.srcdoc = html;
+}
+function fitPreview(){
+  const fr = $("#preview"), box = $("#pbox");
+  const s = Math.min(1, box.clientWidth / 1060);
+  let ht = 900;
+  try{ ht = Math.min(1500, fr.contentDocument.documentElement.scrollHeight || 900); }catch(e){}
+  fr.style.height = ht + "px";
+  fr.style.transform = "scale(" + s + ")";
+  box.style.height = Math.round(ht * s) + "px";
+}
+new ResizeObserver(fitPreview).observe($("#pbox"));
+$("#pbox").addEventListener("click", () => setTimeout(fitPreview, 200), true);
+setInterval(() => { try{ const fr=$("#preview"); if(fr.contentDocument && Math.abs(fr.contentDocument.documentElement.scrollHeight - parseInt(fr.style.height||0)) > 20) fitPreview(); }catch(e){} }, 1000);
+
+/* ===================== save ===================== */
+function download(name, href){ const a = h("a",{href,download:name}); document.body.append(a); a.click(); a.remove(); }
+function validate(){
+  const errs = [];
+  C.divisions.forEach(d => { if(!String(d.name||"").trim()) errs.push("A division has no button text."); });
+  C.branches.forEach(b => { if(!String(b.label||"").trim()) errs.push("An office has no name."); });
+  Object.entries(C.logos).forEach(([k,l]) => { if(!String(l.label||"").trim()) errs.push("A logo (" + k + ") has no brand name."); });
+  return [...new Set(errs)];
+}
+function openSave(){
+  const body = $("#dlgBody"); body.innerHTML = "";
+  const errs = validate();
+  if(errs.length){
+    body.append(h("h2",null,"Almost — fix these first"), h("ul",{class:"err"}, errs.map(e=>h("li",null,e))),
+      h("div",{class:"dlgfoot"}, h("button",{onclick:()=>$("#dlg").close()},"OK")));
+    $("#dlg").showModal(); return;
+  }
+  const json = JSON.stringify(C, null, 2) + "\n";
+  const cfgUrl = URL.createObjectURL(new Blob([json],{type:"application/json"}));
+  const newLogos = Object.keys(PENDING).filter(k => C.logos[k]);
+  const cfgChanged = JSON.stringify(C) !== ORIG;
+  let n = 0;
+  body.append(h("h2",null,"Save to the live site"),
+    h("p",{class:"hint"},"Download, then drag onto GitHub. Takes about a minute."));
+  if(cfgChanged) body.append(h("div",{class:"step"}, h("span",{class:"n"}, String(++n)), h("div",null,
+    h("p",null,"Download the new settings file."),
+    h("div",{class:"btns"}, h("button",{class:"primary",onclick:()=>download("config.json", cfgUrl)},"Download config.json")))));
+  if(newLogos.length) body.append(h("div",{class:"step"}, h("span",{class:"n"}, String(++n)), h("div",null,
+    h("p",null,"Download the new logo image" + (newLogos.length>1?"s":"") + "."),
+    h("div",{class:"files"}, newLogos.map(k=>k+".png").join(", ")),
+    h("div",{class:"btns",style:"margin-top:8px"}, h("button",{class:"primary",onclick:async()=>{ for(const k of newLogos){ download(k+".png", PENDING[k]); await new Promise(r=>setTimeout(r,350)); } }},"Download " + (newLogos.length>1? newLogos.length+" images" : "image"))))));
+  if(cfgChanged) body.append(h("div",{class:"step"}, h("span",{class:"n"}, String(++n)), h("div",null,
+    h("p",null,"Open GitHub, drag ", h("b",null,"config.json"), " onto the page, then press the green ", h("b",null,"Commit changes"), " button. It replaces the old file."),
+    h("div",{class:"btns"}, h("a",{class:"btn",href:REPO+"/upload/main",target:"_blank",rel:"noopener"},"Open GitHub upload ↗")))));
+  if(newLogos.length) body.append(h("div",{class:"step"}, h("span",{class:"n"}, String(++n)), h("div",null,
+    h("p",null,"Open the logos folder upload, drag the image" + (newLogos.length>1?"s":"") + " in, press ", h("b",null,"Commit changes"), "."),
+    h("div",{class:"btns"}, h("a",{class:"btn",href:REPO+"/upload/main/logos",target:"_blank",rel:"noopener"},"Open logos upload ↗")))));
+  body.append(h("div",{class:"step"}, h("span",{class:"n"}, String(++n)), h("div",null,
+    h("p",null,"Wait a minute, then open the live site and hard-refresh (Ctrl/Cmd + Shift + R)."))));
+  body.append(h("div",{class:"dlgfoot"},
+    h("button",{class:"ghost",onclick:()=>$("#dlg").close()},"Keep editing"),
+    h("button",{class:"primary",onclick:()=>{ ORIG = JSON.stringify(C); PENDING = {}; store(DRAFT_KEY); $("#dlg").close(); touch(true); }},"Done — I've uploaded it")));
+  $("#dlg").showModal();
+}
+
+if(!window.Sortable) window.Sortable = {create(){}};  // drag-reorder unavailable offline; editing still works
+boot();
+</script>
+</body>
+</html>
