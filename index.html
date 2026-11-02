@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MV Dugar Group — Email Signature Generator</title>
+<style>
+:root{
+  --ink:#16181C; --ink-2:#4A4F58; --ink-3:#858C97;
+  --paper:#EEEFF0; --card:#FFFFFF; --line:#DEE0E4; --line-2:#EBECEE;
+  --accent:#ED1821;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,"Roboto Mono","DejaVu Sans Mono",Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.top{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+.top-in{max-width:1180px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:14px}
+.top img{width:30px;height:30px;display:block}
+.top h1{font-size:14px;font-weight:650;margin:0;letter-spacing:-.01em}
+.top .sub{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-top:1px}
+.top .spacer{flex:1}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);border:1px solid var(--line);padding:5px 9px;border-radius:100px;white-space:nowrap}
+.wrap{max-width:1180px;margin:0 auto;padding:22px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:start}
+@media(max-width:940px){.wrap{grid-template-columns:1fr;padding:16px;gap:16px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px}
+.card + .card{margin-top:14px}
+.card-h{padding:13px 18px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;gap:9px}
+.card-h .n{font-family:var(--mono);font-size:10px;color:#fff;background:var(--ink);width:17px;height:17px;border-radius:4px;display:grid;place-items:center;flex:none}
+.card-h h2{font-size:12.5px;font-weight:650;margin:0;letter-spacing:-.005em}
+.card-h .hint{font-size:11.5px;color:var(--ink-3);margin-left:auto;text-align:right}
+.card-b{padding:16px 18px}
+label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 5px}
+.field{margin-bottom:13px}.field:last-child{margin-bottom:0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:480px){.row{grid-template-columns:1fr}}
+input,select,textarea{width:100%;font-family:var(--sans);font-size:13.5px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:7px;padding:8px 10px;outline:none}
+textarea{resize:vertical;min-height:52px;line-height:1.45}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+input::placeholder,textarea::placeholder{color:#B7BCC4}
+select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M1 1l4 4 4-4' fill='none' stroke='%23858C97' stroke-width='1.5'/></svg>");background-repeat:no-repeat;background-position:right 11px center;padding-right:28px}
+.note{font-size:11.5px;color:var(--ink-3);margin-top:6px;line-height:1.45}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:8px}
+@media(max-width:480px){.opts{grid-template-columns:1fr 1fr}}
+.opt{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 11px;cursor:pointer;text-align:left;font-family:var(--sans);font-size:12.5px;color:var(--ink-2);line-height:1.35;transition:border-color .12s,background .12s,box-shadow .12s}
+.opt:hover{border-color:#C3C7CE}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 5%,#fff);color:var(--ink);font-weight:600;box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 15%,transparent)}
+.opt:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.grp{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:16px 0 8px;display:flex;align-items:center;gap:9px}
+.grp:first-child{margin-top:0}
+.grp::after{content:"";flex:1;height:1px;background:var(--line-2)}
+.locked{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#FAFAFB;margin-bottom:12px}
+.locked img{display:block}
+.locked .t{font-size:12.5px;font-weight:600;line-height:1.3}
+.locked .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-top:2px}
+.lock-pill{margin-left:auto;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 30%,#fff);background:color-mix(in srgb,var(--accent) 6%,#fff);padding:4px 8px;border-radius:100px;white-space:nowrap}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:9px}
+.chip{position:relative;border:1px solid var(--line);border-radius:9px;background:#fff;padding:10px 9px 9px;cursor:pointer;text-align:center;transition:border-color .12s,box-shadow .12s,background .12s}
+.chip:hover{border-color:#C3C7CE}
+.chip .ph{height:50px;display:grid;place-items:center;margin-bottom:7px}
+.chip img{max-width:100%;max-height:50px;display:block}
+.chip .nm{font-size:11px;line-height:1.3;color:var(--ink-2);word-break:break-word}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 4%,#fff);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 16%,transparent)}
+.chip[aria-pressed="true"] .nm{color:var(--ink);font-weight:600}
+.chip .tick{position:absolute;top:6px;right:6px;width:16px;height:16px;border-radius:50%;background:var(--accent);color:#fff;font-size:10px;line-height:16px;display:none}
+.chip[aria-pressed="true"] .tick{display:block}
+.chip[disabled]{opacity:.42;cursor:not-allowed;background:#FBFBFC}
+.chip:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.sticky{position:sticky;top:80px}
+@media(max-width:940px){.sticky{position:static}}
+.mail{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.mail-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line-2);background:#FAFAFB}
+.dot{width:9px;height:9px;border-radius:50%;background:#DDE0E4}
+.mail-bar .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-left:6px}
+.mail-body{padding:20px 22px 24px}
+.ghost{height:8px;border-radius:4px;background:#F0F1F3;margin-bottom:9px}
+.ghost.s{width:42%}.ghost.m{width:74%}.ghost.l{width:88%}
+.ghost-gap{height:14px}
+#sigStage{overflow-x:auto}
+.actions{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap}
+button.btn{font-family:var(--sans);font-size:13px;font-weight:600;border-radius:8px;padding:10px 15px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;transition:background .12s,border-color .12s}
+button.btn:hover{background:#F7F8F9;border-color:#C9CDD4}
+button.btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+button.btn.primary:hover{background:#000}
+button.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.btn.ok{background:#0F7A34;border-color:#0F7A34;color:#fff}
+.toast{font-size:12px;color:var(--ink-2);margin-top:9px;min-height:17px;line-height:1.45}
+details.help{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+details.help>summary{padding:13px 18px;cursor:pointer;font-size:12.5px;font-weight:650;list-style:none;display:flex;align-items:center;gap:8px}
+details.help>summary::-webkit-details-marker{display:none}
+details.help>summary::before{content:"›";display:inline-block;transition:transform .15s;color:var(--ink-3);font-size:15px}
+details.help[open]>summary::before{transform:rotate(90deg)}
+details.help .card-b{border-top:1px solid var(--line-2);font-size:12.5px;color:var(--ink-2);line-height:1.62}
+details.help ol{margin:0 0 0 17px;padding:0}
+details.help li{margin-bottom:9px}details.help li:last-child{margin-bottom:0}
+details.help code{font-family:var(--mono);font-size:11.5px;background:#F3F4F6;padding:1.5px 5px;border-radius:4px}
+details.help strong{color:var(--ink)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-in">
+    <img id="topmark" alt="">
+    <div><h1 id="ttl"></h1><div class="sub" id="org"></div></div>
+    <div class="spacer"></div>
+    <div class="badge" id="divcount"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div>
+    <div class="card">
+      <div class="card-h"><span class="n">1</span><h2 id="h1"></h2><span class="hint" id="divhint">Nothing selected</span></div>
+      <div class="card-b">
+        <div id="divisions"></div>
+        <div class="field" id="customwrap" hidden style="margin-top:15px">
+          <label for="customdiv" id="customlbl"></label>
+          <input id="customdiv" maxlength="48">
+          <div class="note" id="customnote"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><span class="n">2</span><h2 id="h2"></h2><span class="hint" id="brandhint"></span></div>
+      <div class="card-b">
+        <div class="locked">
+          <img id="lockedmark" width="34" height="34" alt="">
+          <div><div class="t" id="lockedname"></div><div class="s" id="lockednote"></div></div>
+          <span class="lock-pill" id="lockedpill"></span>
+        </div>
+        <div id="chips"></div>
+        <div class="note" id="chipnote"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><span class="n">3</span><h2 id="h3"></h2></div>
+      <div class="card-b">
+        <div class="field"><label for="name" id="lName"></label><input id="name" placeholder="Shubham Dugar" autocomplete="name"></div>
+        <div class="row">
+          <div class="field"><label for="title" id="lTitle"></label><input id="title" placeholder="Executive Director" autocomplete="organization-title"></div>
+          <div class="field"><label for="team" id="lTeam"></label><input id="team" placeholder="Sales &amp; Marketing"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="mobile" id="lMobile"></label><input id="mobile" placeholder="+977 98XX XXXXXX" inputmode="tel"></div>
+          <div class="field"><label for="direct" id="lDirect"></label><input id="direct" placeholder="+977 1 XXXXXXX" inputmode="tel"></div>
+        </div>
+        <div class="field"><label for="email" id="lEmail"></label><input id="email" placeholder="name@mvdugar.com" inputmode="email" autocomplete="email"></div>
+        <div class="field" id="websitewrap"><label for="website" id="lWebsite"></label><select id="website"></select><div class="note" id="websitenote"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><span class="n">4</span><h2 id="h4"></h2></div>
+      <div class="card-b">
+        <div class="field"><label for="branch" id="lBranch"></label><select id="branch"></select></div>
+        <div class="field"><label for="address" id="lAddress"></label><textarea id="address" rows="2"></textarea><div class="note" id="addrnote"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="sticky">
+      <div class="mail">
+        <div class="mail-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">Preview — actual size</span></div>
+        <div class="mail-body">
+          <div class="ghost l"></div><div class="ghost m"></div><div class="ghost s"></div>
+          <div class="ghost-gap"></div>
+          <div id="sigStage"><div id="sig"></div></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="copyBtn"></button>
+        <button class="btn" id="linkBtn"></button>
+        <button class="btn" id="fileBtn"></button>
+      </div>
+      <div class="toast" id="toast"></div>
+
+      <details class="help">
+        <summary>How to install it</summary>
+        <div class="card-b"><ol>
+          <li><strong>Gmail —</strong> Copy signature, then Settings → See all settings → General → Signature → paste. Do not retype anything afterwards; it strips the formatting.</li>
+          <li><strong>Outlook (web) —</strong> Settings → Mail → Compose and reply → paste into the signature box.</li>
+          <li><strong>Outlook (desktop) —</strong> use <em>Download for Outlook</em>, then File → Options → Mail → Signatures → New, and paste the contents of the downloaded file.</li>
+          <li><strong>Apple Mail —</strong> paste, then untick <em>Always match my default message font</em>.</li>
+        </ol></div>
+      </details>
+
+      <details class="help">
+        <summary>For whoever rolls this out</summary>
+        <div class="card-b"><ol>
+          <li><strong>Pre-fill for someone else.</strong> Fill in their details, press <em>Copy pre-filled link</em>, send it to them. They open it and press Copy — nothing to explain.</li>
+          <li><strong>Changing divisions, brands, wording or spacing.</strong> Don't edit this file by hand — use the admin page. It edits everything and exports a fresh copy of this page.</li>
+          <li><strong>Switch to hosted logos.</strong> Logos are embedded here, which makes each signature heavier and can show as an attachment in old Outlook. Once the PNGs are on the website, set <code>hostedBase</code> in the admin page to e.g. <code>https://mvdugar.com/sig/</code> and every logo switches to a URL. Filenames must match the keys — <code>mvdugar.png</code>, <code>johndeere.png</code>.</li>
+        </ol></div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Everything editable lives in CONFIG. Use the admin page to change it —
+   hand-editing risks breaking the email-safe markup. */
+/* The copy baked into this file. If a config.json sits next to the page it
+   wins, which is what makes a settings change a one-file commit rather than a
+   redeploy of the whole generator. */
+const CONFIG_BAKED = {"version":2,"masterKey":"mvdugar","hostedBase":"logos/","brand":{"site":"mvdugar.com","siteUrl":"https://mvdugar.com","groupAccent":"#ED1821"},"design":{"fontStack":"Arial,Helvetica,sans-serif","nameSize":16,"nameColor":"#16181C","titleSize":13,"lineSize":11,"lineColor":"#7A8089","contactSize":12,"contactColor":"#33383F","labelColor":"#9AA0A8","addrSize":11,"addrColor":"#8A9099","showRule":true,"ruleWidth":320,"ruleColor":"#E3E5E8","ruleGapTop":11,"ruleGapBottom":10,"showAccentBar":true,"accentBarW":34,"accentBarH":3,"accentGapTop":12,"showDivider":true,"dividerColor":"#DCDEE2","logoGap":9,"groupGap":13,"stripGapTop":10,"showWebsite":true,"mobileLabel":"M","directLabel":"T","emailLabel":"E","webLabel":"W","sep":"|","brandSep":"·","maxBrands":3,"emptyLinePrompt":"Pick a division on the left","fitTarget":52,"fitMinH":34,"fitMaxH":56,"fitMaxW":150},"labels":{"pageTitle":"Email Signature Generator","org":"MV Dugar Group","step1":"Pick your division","step2":"Pick your brand logos","step3":"Your details","step4":"Office","lockedNote":"On every signature","lockedPill":"Locked","customLabel":"Word it yourself","customNote":"Appears exactly as you type it, in place of a division name.","brandNote":"Whatever you tick also writes itself into the line under your designation, so the words always match the logos.","fName":"Full name","fTitle":"Designation","fTeam":"Team","fMobile":"Mobile","fDirect":"Direct line","fEmail":"Email","fBranch":"Branch","fAddress":"Address line","addrNote":"Shown on one line. Keep it short — long addresses wrap awkwardly in Outlook.","btnCopy":"Copy signature","btnLink":"Copy pre-filled link","btnFile":"Download for Outlook","fWebsite":"Website shown"},"divisions":[{"id":"corporate","group":"Group","name":"Corporate Office","line":"Corporate Office"},{"id":"hr","group":"Group","name":"Human Resources","line":"Human Resources"},{"id":"finance","group":"Group","name":"Finance & Accounts","line":"Finance & Accounts"},{"id":"it","group":"Group","name":"Information Technology","line":"Information Technology"},{"id":"auto","group":"Automobile","name":"Automobile Division","line":"Automobile Division"},{"id":"ev","group":"Automobile","name":"Electric Vehicles","line":"Electric Vehicles"},{"id":"aftersales","group":"Automobile","name":"Service & Spare Parts","line":"Service & Spare Parts"},{"id":"finserv","group":"Businesses","name":"Financial Services","line":"Financial Services"},{"id":"hydro","group":"Businesses","name":"Hydropower","line":"Hydropower"},{"id":"cold","group":"Businesses","name":"Cold Storage","line":"Cold Storage"},{"id":"construct","group":"Businesses","name":"Construction & Engineering","line":"Construction & Engineering"},{"id":"other","group":"Something else","name":"Other — type it in","line":"","custom":true}],"brandGroups":[{"label":"Automobile","keys":["mahindra","tatahitachi","johndeere","bkt"]},{"label":"Electric vehicles","keys":["revolt","kaifeng"]},{"label":"Hydropower","keys":["ghpa","nasa","numbur","panhim"]},{"label":"Other businesses","keys":["manokamana","kohinoor","sumo"]}],"branches":[{"id":"head","label":"Head Office — Naxal","address":"Naxal, Kathmandu, Nepal"},{"id":"corporate","label":"Corporate Office — Kantipath","address":"Kantipath, Kathmandu, Nepal"},{"id":"birgunj","label":"Birgunj Office","address":"Birgunj, Parsa, Nepal"},{"id":"other","label":"Other — type your own","address":""}],"logos":{"mvdugar":{"label":"MV Dugar Group","w":52,"h":52,"accent":"#ED1821","url":""},"mahindra":{"label":"Mahindra","w":150,"h":23,"accent":"#E31937","url":""},"johndeere":{"label":"John Deere","w":64,"h":42,"accent":"#367C2B","url":""},"bkt":{"label":"BKT Tires","w":76,"h":36,"accent":"#007633","url":""},"revolt":{"label":"Revolt","w":91,"h":34,"accent":"#111111","url":""},"kaifeng":{"label":"Jiangsu Kaifeng","w":58,"h":46,"accent":"#7A7A7A","url":""},"manokamana":{"label":"Manokamana Hire Purchase","w":50,"h":54,"accent":"#02408E","url":""},"ghpa":{"label":"Global Hydro Power Associate","w":59,"h":46,"accent":"#E52326","url":""},"nasa":{"label":"Nasa HydroPower","w":52,"h":52,"accent":"#1F1F1F","url":""},"numbur":{"label":"Numbur Himalaya Hydropower","w":56,"h":49,"accent":"#3C4078","url":""},"panhim":{"label":"Pan Himalaya Energy","w":63,"h":43,"accent":"#33367F","url":""},"kohinoor":{"label":"Kohinoor Cold Storage","w":51,"h":53,"accent":"#086B2C","url":""},"sumo":{"label":"Sumo Construction & Engineering","w":54,"h":50,"accent":"#FD0000","url":""},"tatahitachi":{"label":"TATA Hitachi","w":123,"h":24,"accent":"#F44E00","url":""}}};
+
+/* ============================================================
+   Shared signature core.
+   This exact code is injected into BOTH the generator and the
+   admin page, so the admin preview can never drift from what
+   staff actually get. Do not edit it in one file only.
+   ============================================================ */
+
+function sigEsc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+/* Optical sizing rule. Logos are normalised by geometric mean rather than by
+   height, otherwise a wide wordmark towers over a stacked mark. Height is then
+   clamped, width capped, and near-fully-inked marks (a solid colour block reads
+   much heavier than outline type) are pulled back. */
+function sigFit(w, h, ink, d){
+  const ar = w / h;
+  let dh = Math.max(d.fitMinH, Math.min(d.fitMaxH, d.fitTarget / Math.sqrt(ar)));
+  let dw = dh * ar;
+  if(dw > d.fitMaxW){ dw = d.fitMaxW; dh = dw / ar; }
+  if(ink > 0.9){ dw *= 0.82; dh *= 0.82; }
+  return { w: Math.round(dw), h: Math.round(dh) };
+}
+
+/* A near-black or unsaturated brand colour would make the designation line
+   vanish against the name above it, so those fall back to the group colour. */
+function sigAccent(cfg, brands){
+  const master = cfg.brand.groupAccent;
+  if(!brands || !brands.length) return master;
+  const L = cfg.logos[brands[0]];
+  if(!L || !L.accent) return master;
+  const hex = L.accent;
+  const r = parseInt(hex.substr(1,2),16), g = parseInt(hex.substr(3,2),16), b = parseInt(hex.substr(5,2),16);
+  const lum = (0.299*r + 0.587*g + 0.114*b)/255;
+  const sat = (Math.max(r,g,b) - Math.min(r,g,b))/255;
+  return (lum < 0.16 || sat < 0.12) ? master : hex;
+}
+
+/* A brand's own site is stored as a single URL; the text shown is derived from
+   it, so there's only one thing to paste in per brand. */
+function sigSiteLabel(u){
+  return String(u||"").trim().replace(/^https?:\/\//i,"").replace(/^www\./i,"").replace(/\/+$/,"");
+}
+function sigSiteUrl(u){
+  const s=String(u||"").trim();
+  if(!s) return "";
+  return /^https?:\/\//i.test(s) ? s : "https://"+s.replace(/^\/+/,"");
+}
+/* Which site the signature carries: the group's by default, a chosen brand's
+   if that brand has one, or none at all. */
+function sigSite(cfg, v){
+  if(v.websiteKey === "none") return null;
+  const L = v.websiteKey ? cfg.logos[v.websiteKey] : null;
+  if(L && L.url) return { url: sigSiteUrl(L.url), label: sigSiteLabel(L.url) };
+  const gu = cfg.brand.siteUrl || cfg.brand.site;
+  if(!gu) return null;
+  return { url: sigSiteUrl(gu), label: cfg.brand.site || sigSiteLabel(gu) };
+}
+
+function sigSrc(cfg, k){
+  if(cfg.hostedBase) return cfg.hostedBase + k + ".png";
+  return (cfg.logos[k] || {}).src || "";
+}
+
+/* v = {name,title,team,mobile,direct,email,address,divisionId,customDivision,brands[]} */
+function buildSignature(cfg, v){
+  const d = cfg.design, A = sigAccent(cfg, v.brands);
+  const F = "font-family:" + d.fontStack + ";";
+  const div = (cfg.divisions || []).find(x => x.id === v.divisionId) || null;
+
+  const name  = (v.name  || "").trim() || "Your Name";
+  const title = (v.title || "").trim() || "Your Designation";
+  const team  = (v.team  || "").trim();
+  const addr  = (v.address || "").trim();
+
+  /* One source of truth: the line is written from the same labels that drive
+     the images, so words and logos can never disagree. */
+  const divText = div ? (div.custom ? (v.customDivision||"").trim() : div.line) : "";
+  const parts = [];
+  if(team) parts.push(sigEsc(team));
+  if(divText) parts.push(sigEsc(divText));
+  const brandNames = (v.brands||[]).filter(k=>cfg.logos[k]).map(k => sigEsc(cfg.logos[k].label));
+  const sep  = " &nbsp;" + sigEsc(d.sep) + "&nbsp; ";
+  const bsep = " &nbsp;" + sigEsc(d.brandSep) + "&nbsp; ";
+  let line = parts.join(sep);
+  if(brandNames.length) line = (line ? line + sep : "") + brandNames.join(bsep);
+  if(!line) line = '<span style="color:#B9BEC6;">' + sigEsc(d.emptyLinePrompt) + '</span>';
+
+  const tel = n => "tel:" + String(n).replace(/[^0-9+]/g,"");
+  const lab = t => '<span style="color:'+d.labelColor+';">'+t+'</span>&nbsp; ';
+  const link = (href,text) => '<a href="'+href+'" style="color:'+d.contactColor+';text-decoration:none;">'+sigEsc(text)+'</a>';
+  const rows = [];
+  if((v.mobile||"").trim()) rows.push(lab(d.mobileLabel) + link(tel(v.mobile.trim()), v.mobile.trim()));
+  if((v.direct||"").trim()) rows.push(lab(d.directLabel) + link(tel(v.direct.trim()), v.direct.trim()));
+  if((v.email ||"").trim()) rows.push(lab(d.emailLabel)  + link("mailto:"+v.email.trim(), v.email.trim()));
+  if(d.showWebsite){
+    const site = sigSite(cfg, v);
+    if(site && site.url) rows.push(lab(d.webLabel) + link(site.url, site.label));
+  }
+
+  /* Logo strip. Every cell is valign=middle so unequal logo heights sit on one
+     optical line. The rule after the group mark is a cell border, not an empty
+     1px cell, because several clients collapse empty cells. */
+  const img = (k, pad, border) => {
+    const L = cfg.logos[k]; if(!L) return "";
+    return '<td valign="middle" style="' + (border ? 'border-left:1px solid '+d.dividerColor+';' : '')
+      + 'padding:'+pad+';">'
+      + '<img src="'+sigSrc(cfg,k)+'" width="'+L.w+'" height="'+L.h+'" alt="'+sigEsc(L.label)+'"'
+      + ' style="display:block;width:'+L.w+'px;height:'+L.h+'px;border:0;outline:none;'
+      + 'text-decoration:none;-ms-interpolation-mode:bicubic;">'
+      + '</td>';
+  };
+  const g = d.logoGap, gg = d.groupGap;
+  const picked = (v.brands||[]).filter(k => cfg.logos[k]);
+  let strip = img(cfg.masterKey, "0 "+gg+"px 0 0", false);
+  picked.forEach((k,i) => {
+    strip += i === 0 && d.showDivider
+      ? img(k, "0 "+g+"px 0 "+gg+"px", true)
+      : img(k, "0 "+g+"px", false);
+  });
+
+  const tbl = 'cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;';
+  let out = '<table '+tbl+F+'">';
+  out += '<tr><td style="'+F+'font-size:'+d.nameSize+'px;line-height:'+Math.round(d.nameSize*1.3)+'px;font-weight:bold;color:'+d.nameColor+';padding:0 0 3px;">'+sigEsc(name)+'</td></tr>';
+  out += '<tr><td style="'+F+'font-size:'+d.titleSize+'px;line-height:'+Math.round(d.titleSize*1.3)+'px;font-weight:bold;color:'+A+';padding:0 0 3px;">'+sigEsc(title)+'</td></tr>';
+  out += '<tr><td style="'+F+'font-size:'+d.lineSize+'px;line-height:'+Math.round(d.lineSize*1.45)+'px;color:'+d.lineColor+';letter-spacing:.02em;">'+line+'</td></tr>';
+  if(d.showRule)
+    out += '<tr><td style="padding:'+d.ruleGapTop+'px 0 '+d.ruleGapBottom+'px;"><table '+tbl+'" width="'+d.ruleWidth+'"><tr><td height="1" bgcolor="'+d.ruleColor+'" style="height:1px;line-height:1px;font-size:1px;">&nbsp;</td></tr></table></td></tr>';
+  out += '<tr><td style="'+F+'font-size:'+d.contactSize+'px;line-height:'+Math.round(d.contactSize*1.58)+'px;color:'+d.contactColor+';">'+rows.join("<br>")+'</td></tr>';
+  if(addr)
+    out += '<tr><td style="'+F+'font-size:'+d.addrSize+'px;line-height:'+Math.round(d.addrSize*1.45)+'px;color:'+d.addrColor+';padding:7px 0 0;">'+sigEsc(addr)+'</td></tr>';
+  if(d.showAccentBar)
+    out += '<tr><td style="padding:'+d.accentGapTop+'px 0 0;"><table '+tbl+'width:'+d.accentBarW+'px;" width="'+d.accentBarW+'"><tr><td width="'+d.accentBarW+'" height="'+d.accentBarH+'" bgcolor="'+A+'" style="width:'+d.accentBarW+'px;height:'+d.accentBarH+'px;font-size:0;line-height:0;border-top:'+d.accentBarH+'px solid '+A+';mso-line-height-rule:exactly;">&#8203;</td></tr></table></td></tr>';
+  out += '<tr><td style="padding:'+d.stripGapTop+'px 0 0;"><table '+tbl+'"><tr>'+strip+'</tr></table></td></tr>';
+  out += '</table>';
+  return out;
+}
+
+let CONFIG = CONFIG_BAKED;
+
+async function boot(){
+  try{
+    /* Cache-busted: GitHub Pages serves with a ten-minute cache, and a stale
+       config after an edit looks exactly like a broken deploy.
+       Time-limited: a request that hangs behind a slow proxy must not leave
+       the page blank, so after a few seconds the baked copy is used instead. */
+    const r = await Promise.race([
+      fetch("config.json?t=" + Date.now(), {cache:"no-store"}),
+      new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")), 4000))
+    ]);
+    if(r.ok){
+      const c = await r.json();
+      if(c && c.divisions && c.logos && c.design) CONFIG = c;
+    }
+  }catch(e){
+    /* opened from disk, offline, no config.json alongside, or too slow:
+       the baked copy stands and the page still works */
+  }
+  main();
+}
+
+function main(){
+
+
+const $ = id => document.getElementById(id);
+const L = CONFIG.labels, D = CONFIG.design;
+let state = { div:"", brands:[], branch:"" };
+
+/* ---------- static wording from config ---------- */
+document.title = L.org + " — " + L.pageTitle;
+$("ttl").textContent = L.pageTitle; $("org").textContent = L.org;
+$("h1").textContent = L.step1; $("h2").textContent = L.step2;
+$("h3").textContent = L.step3; $("h4").textContent = L.step4;
+$("customlbl").textContent = L.customLabel; $("customnote").textContent = L.customNote;
+$("chipnote").textContent = L.brandNote;
+$("lockednote").textContent = L.lockedNote; $("lockedpill").textContent = L.lockedPill;
+$("lockedname").textContent = (CONFIG.logos[CONFIG.masterKey]||{}).label || "";
+$("addrnote").textContent = L.addrNote;
+$("copyBtn").textContent = L.btnCopy; $("linkBtn").textContent = L.btnLink; $("fileBtn").textContent = L.btnFile;
+[["lName","fName"],["lTitle","fTitle"],["lTeam","fTeam"],["lMobile","fMobile"],
+ ["lDirect","fDirect"],["lEmail","fEmail"],["lBranch","fBranch"],["lAddress","fAddress"],
+ ["lWebsite","fWebsite"]]
+  .forEach(([id,k]) => $(id).textContent = L[k]);
+$("customdiv").placeholder = "e.g. Legal & Compliance";
+$("topmark").src = $("lockedmark").src = sigSrc(CONFIG, CONFIG.masterKey);
+$("divcount").textContent = CONFIG.divisions.length + " divisions · "
+  + CONFIG.brandGroups.reduce((n,g)=>n+g.keys.length,0) + " brand logos";
+
+(function initBranches(){
+  const sel = $("branch");
+  const blank = document.createElement("option"); blank.value=""; blank.textContent="Choose an office…"; sel.appendChild(blank);
+  CONFIG.branches.forEach(b=>{ const o=document.createElement("option"); o.value=b.id; o.textContent=b.label; sel.appendChild(o); });
+})();
+
+function currentDiv(){ return CONFIG.divisions.find(d=>d.id===state.div) || null; }
+function branchById(id){ return CONFIG.branches.find(b=>b.id===id) || null; }
+
+function renderDivisions(){
+  const box = $("divisions"); box.innerHTML = ""; let group=null, grid=null;
+  CONFIG.divisions.forEach(d=>{
+    if(d.group !== group){
+      group = d.group;
+      const h=document.createElement("div"); h.className="grp"; h.textContent=group; box.appendChild(h);
+      grid=document.createElement("div"); grid.className="opts"; box.appendChild(grid);
+    }
+    const b=document.createElement("button");
+    b.type="button"; b.className="opt"; b.textContent=d.name;
+    b.setAttribute("aria-pressed", state.div===d.id);
+    b.onclick=()=>{ state.div = state.div===d.id ? "" : d.id; renderDivisions(); render(); };
+    grid.appendChild(b);
+  });
+  const d=currentDiv(), custom=!!(d&&d.custom);
+  $("customwrap").hidden = !custom;
+  if(custom && document.activeElement !== $("customdiv")) $("customdiv").focus();
+  $("divhint").textContent = !d ? "Nothing selected"
+    : custom ? ($("customdiv").value.trim() || "Type your own") : d.name;
+}
+
+function renderChips(){
+  const box=$("chips"); box.innerHTML="";
+  CONFIG.brandGroups.forEach(g=>{
+    const keys = g.keys.filter(k=>CONFIG.logos[k]);
+    if(!keys.length) return;
+    const h=document.createElement("div"); h.className="grp"; h.textContent=g.label; box.appendChild(h);
+    const grid=document.createElement("div"); grid.className="chips"; box.appendChild(grid);
+    keys.forEach(k=>{
+      const lg=CONFIG.logos[k], on=state.brands.includes(k), full=state.brands.length>=D.maxBrands && !on;
+      const b=document.createElement("button");
+      b.type="button"; b.className="chip"; b.setAttribute("aria-pressed", on);
+      if(full) b.disabled=true;
+      b.innerHTML='<span class="tick">✓</span><span class="ph"><img src="'+sigSrc(CONFIG,k)+'" alt=""></span><span class="nm">'+sigEsc(lg.label)+'</span>';
+      b.onclick=()=>{ state.brands = on ? state.brands.filter(x=>x!==k) : state.brands.concat(k);
+                      renderChips(); renderWebsite(); render(); };
+      grid.appendChild(b);
+    });
+  });
+  $("brandhint").textContent = state.brands.length
+    ? state.brands.length+" of "+D.maxBrands+" selected" : "Group mark only";
+}
+
+/* The options here depend on which brands are ticked, so it rebuilds whenever
+   the selection changes. A brand only appears if it has a site of its own. */
+function renderWebsite(){
+  const sel=$("website"), keep=sel.value;
+  sel.innerHTML="";
+  const group=document.createElement("option");
+  group.value=""; group.textContent=CONFIG.brand.site || sigSiteLabel(CONFIG.brand.siteUrl);
+  sel.appendChild(group);
+  const own=state.brands.filter(k=>CONFIG.logos[k] && CONFIG.logos[k].url);
+  own.forEach(k=>{
+    const o=document.createElement("option");
+    o.value=k; o.textContent=sigSiteLabel(CONFIG.logos[k].url)+" — "+CONFIG.logos[k].label;
+    sel.appendChild(o);
+  });
+  const none=document.createElement("option");
+  none.value="none"; none.textContent="Don't show a website";
+  sel.appendChild(none);
+  sel.value = [...sel.options].some(o=>o.value===keep) ? keep : "";
+  $("websitewrap").hidden = !D.showWebsite;
+  const withSite = state.brands.filter(k=>CONFIG.logos[k] && CONFIG.logos[k].url).length;
+  $("websitenote").textContent = state.brands.length && !withSite
+    ? "The brands you picked don't have their own sites on file."
+    : "";
+}
+
+function values(){
+  return { name:$("name").value, title:$("title").value, team:$("team").value,
+           mobile:$("mobile").value, direct:$("direct").value, email:$("email").value,
+           address:$("address").value, divisionId:state.div,
+           customDivision:$("customdiv").value, brands:state.brands,
+           websiteKey:$("website").value };
+}
+function render(){
+  document.documentElement.style.setProperty("--accent", sigAccent(CONFIG, state.brands));
+  $("sig").innerHTML = buildSignature(CONFIG, values());
+}
+
+$("branch").onchange = e => {
+  state.branch = e.target.value;
+  const b = branchById(e.target.value);
+  if(b && b.id !== "other") $("address").value = b.address;
+  render();
+};
+$("address").oninput = render;
+$("website").onchange = render;
+["name","title","team","mobile","direct","email"].forEach(id => $(id).oninput = render);
+$("customdiv").oninput = () => { $("divhint").textContent = $("customdiv").value.trim() || "Type your own"; render(); };
+
+function toast(m){ $("toast").textContent = m; }
+function flash(btn,label){ const o=btn.textContent; btn.textContent=label; btn.classList.add("ok");
+  setTimeout(()=>{ btn.textContent=o; btn.classList.remove("ok"); },1800); }
+
+$("copyBtn").onclick = async function(){
+  const node=$("sig"), html=node.innerHTML, plain=node.innerText;
+  try{
+    if(navigator.clipboard && window.ClipboardItem && window.isSecureContext){
+      await navigator.clipboard.write([new ClipboardItem({
+        "text/html": new Blob([html],{type:"text/html"}),
+        "text/plain": new Blob([plain],{type:"text/plain"})})]);
+    } else throw new Error("fallback");
+  }catch(e){
+    const r=document.createRange(); r.selectNodeContents(node);
+    const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    const ok=document.execCommand("copy"); s.removeAllRanges();
+    if(!ok){ toast("Couldn't copy automatically. Select the signature above and copy it by hand."); return; }
+  }
+  flash(this,"Copied");
+  toast("Paste straight into your signature settings. Don't edit it afterwards — that's what breaks the formatting.");
+};
+
+$("linkBtn").onclick = function(){
+  const p=new URLSearchParams({ d:state.div, b:state.brands.join(","), br:state.branch, w:$("website").value,
+    cd:$("customdiv").value, n:$("name").value, t:$("title").value, tm:$("team").value,
+    m:$("mobile").value, dl:$("direct").value, e:$("email").value, a:$("address").value });
+  const url=location.href.split("#")[0].split("?")[0]+"#"+p.toString();
+  const ta=document.createElement("textarea"); ta.value=url; ta.style.cssText="position:fixed;opacity:0";
+  document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+  flash(this,"Link copied");
+  toast(location.protocol==="file:"
+    ? "This link only works for people who have the file saved at the same path. Put the page on the intranet and it works for everyone."
+    : "Send this link to them — it opens with everything already filled in.");
+};
+
+$("fileBtn").onclick = function(){
+  const doc='<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'+$("sig").innerHTML+'</body></html>';
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([doc],{type:"text/html"}));
+  a.download=(($("name").value.trim()||"signature").replace(/[^\w]+/g,"-").toLowerCase())+"-signature.htm";
+  a.click(); URL.revokeObjectURL(a.href);
+  toast("Open the file, select all, copy, and paste into Outlook's signature editor.");
+};
+
+let hashWebsite = "";
+(function fromHash(){
+  if(!location.hash) return;
+  const p=new URLSearchParams(location.hash.slice(1));
+  if(p.get("d") && CONFIG.divisions.some(d=>d.id===p.get("d"))) state.div=p.get("d");
+  state.brands=(p.get("b")||"").split(",").filter(k=>CONFIG.logos[k]&&k!==CONFIG.masterKey).slice(0,D.maxBrands);
+  if(p.get("br") && branchById(p.get("br"))) state.branch=p.get("br");
+  $("branch").value=state.branch;
+  const map={n:"name",t:"title",tm:"team",m:"mobile",dl:"direct",e:"email",a:"address",cd:"customdiv"};
+  Object.entries(map).forEach(([k,id])=>{ if(p.get(k)) $(id).value=p.get(k); });
+  hashWebsite = p.get("w") || "";
+})();
+
+renderDivisions(); renderChips(); renderWebsite();
+if(hashWebsite && [...$("website").options].some(o=>o.value===hashWebsite)) $("website").value=hashWebsite;
+render();
+
+}
+
+boot();
+</script>
+</body>
+</html>
