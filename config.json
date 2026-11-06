@@ -1,308 +1,327 @@
 {
- "version": 2,
- "masterKey": "mvdugar",
- "hostedBase": "logos/",
- "brand": {
-  "site": "mvdugar.com",
-  "siteUrl": "https://mvdugar.com",
-  "groupAccent": "#ED1821"
- },
- "design": {
-  "fontStack": "Arial,Helvetica,sans-serif",
-  "nameSize": 16,
-  "nameColor": "#16181C",
-  "titleSize": 13,
-  "lineSize": 11,
-  "lineColor": "#7A8089",
-  "contactSize": 12,
-  "contactColor": "#33383F",
-  "labelColor": "#9AA0A8",
-  "addrSize": 11,
-  "addrColor": "#8A9099",
-  "showRule": true,
-  "ruleWidth": 320,
-  "ruleColor": "#E3E5E8",
-  "ruleGapTop": 11,
-  "ruleGapBottom": 10,
-  "showAccentBar": true,
-  "accentBarW": 34,
-  "accentBarH": 3,
-  "accentGapTop": 12,
-  "showDivider": true,
-  "dividerColor": "#DCDEE2",
-  "logoGap": 9,
-  "groupGap": 13,
-  "stripGapTop": 10,
-  "showWebsite": true,
-  "mobileLabel": "M",
-  "directLabel": "T",
-  "emailLabel": "E",
-  "webLabel": "W",
-  "sep": "|",
-  "brandSep": "·",
-  "maxBrands": 3,
-  "emptyLinePrompt": "Pick a division on the left",
-  "fitTarget": 52,
-  "fitMinH": 34,
-  "fitMaxH": 56,
-  "fitMaxW": 150
- },
- "labels": {
-  "pageTitle": "Email Signature Generator",
-  "org": "MV Dugar Group",
-  "step1": "Pick your division",
-  "step2": "Pick your brand logos",
-  "step3": "Your details",
-  "step4": "Office",
-  "lockedNote": "On every signature",
-  "lockedPill": "Locked",
-  "customLabel": "Word it yourself",
-  "customNote": "Appears exactly as you type it, in place of a division name.",
-  "brandNote": "Whatever you tick also writes itself into the line under your designation, so the words always match the logos.",
-  "fName": "Full name",
-  "fTitle": "Designation",
-  "fTeam": "Team",
-  "fMobile": "Mobile",
-  "fDirect": "Direct line",
-  "fEmail": "Email",
-  "fBranch": "Branch",
-  "fAddress": "Address line",
-  "addrNote": "Shown on one line. Keep it short — long addresses wrap awkwardly in Outlook.",
-  "btnCopy": "Copy signature",
-  "btnLink": "Copy pre-filled link",
-  "btnFile": "Download for Outlook",
-  "fWebsite": "Website shown"
- },
- "divisions": [
-  {
-   "id": "corporate",
-   "group": "Group",
-   "name": "Corporate Office",
-   "line": "Corporate Office"
+  "version": 2,
+  "masterKey": "mvdugar",
+  "hostedBase": "logos/",
+  "brand": {
+    "site": "mvdugar.com",
+    "siteUrl": "https://mvdugar.com",
+    "groupAccent": "#ED1821"
   },
-  {
-   "id": "hr",
-   "group": "Group",
-   "name": "Human Resources",
-   "line": "Human Resources"
+  "design": {
+    "fontStack": "Arial,Helvetica,sans-serif",
+    "nameSize": 16,
+    "nameColor": "#16181C",
+    "titleSize": 13,
+    "lineSize": 11,
+    "lineColor": "#7A8089",
+    "contactSize": 12,
+    "contactColor": "#33383F",
+    "labelColor": "#9AA0A8",
+    "addrSize": 11,
+    "addrColor": "#8A9099",
+    "showRule": true,
+    "ruleWidth": 320,
+    "ruleColor": "#E3E5E8",
+    "ruleGapTop": 11,
+    "ruleGapBottom": 10,
+    "showAccentBar": true,
+    "accentBarW": 34,
+    "accentBarH": 3,
+    "accentGapTop": 12,
+    "showDivider": true,
+    "dividerColor": "#DCDEE2",
+    "logoGap": 9,
+    "groupGap": 13,
+    "stripGapTop": 10,
+    "showWebsite": true,
+    "mobileLabel": "M",
+    "directLabel": "T",
+    "emailLabel": "E",
+    "webLabel": "W",
+    "sep": "|",
+    "brandSep": "·",
+    "maxBrands": 4,
+    "emptyLinePrompt": "Pick a division on the left",
+    "fitTarget": 52,
+    "fitMinH": 34,
+    "fitMaxH": 56,
+    "fitMaxW": 150
   },
-  {
-   "id": "finance",
-   "group": "Group",
-   "name": "Finance & Accounts",
-   "line": "Finance & Accounts"
+  "labels": {
+    "pageTitle": "Email Signature Generator",
+    "org": "MV Dugar Group",
+    "step1": "Pick your division",
+    "step2": "Pick your brand logos",
+    "step3": "Your details",
+    "step4": "Office",
+    "lockedNote": "On every signature",
+    "lockedPill": "Locked",
+    "customLabel": "Word it yourself",
+    "customNote": "Appears exactly as you type it, in place of a division name.",
+    "brandNote": "Whatever you tick also writes itself into the line under your designation, so the words always match the logos.",
+    "fName": "Full name",
+    "fTitle": "Designation",
+    "fTeam": "Team",
+    "fMobile": "Mobile",
+    "fDirect": "Direct line",
+    "fEmail": "Email",
+    "fBranch": "Branch",
+    "fAddress": "Address line",
+    "addrNote": "Shown on one line. Keep it short — long addresses wrap awkwardly in Outlook.",
+    "btnCopy": "Copy signature",
+    "btnLink": "Copy pre-filled link",
+    "btnFile": "Download for Outlook",
+    "fWebsite": "Website shown"
   },
-  {
-   "id": "it",
-   "group": "Group",
-   "name": "Information Technology",
-   "line": "Information Technology"
-  },
-  {
-   "id": "auto",
-   "group": "Automobile",
-   "name": "Automobile Division",
-   "line": "Automobile Division"
-  },
-  {
-   "id": "ev",
-   "group": "Automobile",
-   "name": "Electric Vehicles",
-   "line": "Electric Vehicles"
-  },
-  {
-   "id": "aftersales",
-   "group": "Automobile",
-   "name": "Service & Spare Parts",
-   "line": "Service & Spare Parts"
-  },
-  {
-   "id": "finserv",
-   "group": "Businesses",
-   "name": "Financial Services",
-   "line": "Financial Services"
-  },
-  {
-   "id": "hydro",
-   "group": "Businesses",
-   "name": "Hydropower",
-   "line": "Hydropower"
-  },
-  {
-   "id": "cold",
-   "group": "Businesses",
-   "name": "Cold Storage",
-   "line": "Cold Storage"
-  },
-  {
-   "id": "construct",
-   "group": "Businesses",
-   "name": "Construction & Engineering",
-   "line": "Construction & Engineering"
-  },
-  {
-   "id": "other",
-   "group": "Something else",
-   "name": "Other — type it in",
-   "line": "",
-   "custom": true
+  "divisions": [
+    {
+      "id": "corporate",
+      "group": "Group",
+      "name": "Corporate Office",
+      "line": "Corporate Office"
+    },
+    {
+      "id": "hr",
+      "group": "Group",
+      "name": "Human Resources",
+      "line": "Human Resources"
+    },
+    {
+      "id": "finance",
+      "group": "Group",
+      "name": "Finance & Accounts",
+      "line": "Finance & Accounts"
+    },
+    {
+      "id": "it",
+      "group": "Group",
+      "name": "Information Technology",
+      "line": "Information Technology"
+    },
+    {
+      "id": "auto",
+      "group": "Automobile",
+      "name": "Automobile Division",
+      "line": "Automobile Division"
+    },
+    {
+      "id": "ev",
+      "group": "Automobile",
+      "name": "Electric Vehicles",
+      "line": "Electric Vehicles"
+    },
+    {
+      "id": "aftersales",
+      "group": "Automobile",
+      "name": "Service & Spare Parts",
+      "line": "Service & Spare Parts"
+    },
+    {
+      "id": "division",
+      "group": "Automobile",
+      "name": "FMCG",
+      "line": "FMCG"
+    },
+    {
+      "id": "finserv",
+      "group": "Businesses",
+      "name": "Financial Services",
+      "line": "Financial Services"
+    },
+    {
+      "id": "hydro",
+      "group": "Businesses",
+      "name": "Hydropower",
+      "line": "Hydropower"
+    },
+    {
+      "id": "cold",
+      "group": "Businesses",
+      "name": "Cold Storage",
+      "line": "Cold Storage"
+    },
+    {
+      "id": "construct",
+      "group": "Businesses",
+      "name": "Construction & Engineering",
+      "line": "Construction & Engineering"
+    },
+    {
+      "id": "other",
+      "group": "Something else",
+      "name": "Other — type it in",
+      "line": "",
+      "custom": true
+    }
+  ],
+  "brandGroups": [
+    {
+      "label": "Automobile",
+      "keys": [
+        "mahindra",
+        "tatahitachi",
+        "johndeere",
+        "bkt"
+      ]
+    },
+    {
+      "label": "Electric vehicles",
+      "keys": [
+        "revolt",
+        "kaifeng"
+      ]
+    },
+    {
+      "label": "Hydropower",
+      "keys": [
+        "ghpa",
+        "nasa",
+        "numbur",
+        "panhim"
+      ]
+    },
+    {
+      "label": "Other businesses",
+      "keys": [
+        "honeymanlogoctv9upj6",
+        "manokamana",
+        "sumo",
+        "kohinoor"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "id": "head",
+      "label": "Head Office — Naxal",
+      "address": "Naxal, Kathmandu, Nepal"
+    },
+    {
+      "id": "corporate",
+      "label": "Corporate Office — Kantipath",
+      "address": "Kantipath, Kathmandu, Nepal"
+    },
+    {
+      "id": "office",
+      "label": "Balaju Officer",
+      "address": ""
+    },
+    {
+      "id": "birgunj",
+      "label": "Birgunj Office",
+      "address": "Birgunj, Parsa, Nepal"
+    },
+    {
+      "id": "other",
+      "label": "Other — type your own",
+      "address": ""
+    }
+  ],
+  "logos": {
+    "mvdugar": {
+      "label": "MV Dugar Group",
+      "w": 52,
+      "h": 52,
+      "accent": "#ED1821",
+      "url": "www.mvdugar.com"
+    },
+    "mahindra": {
+      "label": "Mahindra",
+      "w": 150,
+      "h": 23,
+      "accent": "#E31937",
+      "url": "mahindra"
+    },
+    "johndeere": {
+      "label": "John Deere",
+      "w": 64,
+      "h": 42,
+      "accent": "#367C2B",
+      "url": ""
+    },
+    "bkt": {
+      "label": "BKT Tires",
+      "w": 76,
+      "h": 36,
+      "accent": "#007633",
+      "url": ""
+    },
+    "revolt": {
+      "label": "Revolt",
+      "w": 91,
+      "h": 34,
+      "accent": "#111111",
+      "url": "https://revolt.com.np"
+    },
+    "kaifeng": {
+      "label": "Jiangsu Kaifeng",
+      "w": 58,
+      "h": 46,
+      "accent": "#7A7A7A",
+      "url": "https://www.kaifeng.com.np"
+    },
+    "manokamana": {
+      "label": "Manokamana Hire Purchase",
+      "w": 50,
+      "h": 54,
+      "accent": "#02408E",
+      "url": "https://manokamanahirepurchase.com.np"
+    },
+    "ghpa": {
+      "label": "Global Hydro Power Associate",
+      "w": 59,
+      "h": 46,
+      "accent": "#E52326",
+      "url": ""
+    },
+    "nasa": {
+      "label": "Nasa HydroPower",
+      "w": 52,
+      "h": 52,
+      "accent": "#1F1F1F",
+      "url": ""
+    },
+    "numbur": {
+      "label": "Numbur Himalaya Hydropower",
+      "w": 56,
+      "h": 49,
+      "accent": "#3C4078",
+      "url": ""
+    },
+    "panhim": {
+      "label": "Pan Himalaya Energy",
+      "w": 63,
+      "h": 43,
+      "accent": "#33367F",
+      "url": ""
+    },
+    "kohinoor": {
+      "label": "Kohinoor Cold Storage",
+      "w": 51,
+      "h": 53,
+      "accent": "#086B2C",
+      "url": ""
+    },
+    "sumo": {
+      "label": "Sumo Construction & Engineering",
+      "w": 54,
+      "h": 50,
+      "accent": "#FD0000",
+      "url": ""
+    },
+    "tatahitachi": {
+      "label": "TATA Hitachi",
+      "w": 123,
+      "h": 24,
+      "accent": "#F44E00",
+      "url": "https://www.dugarearthmovers.com.np"
+    },
+    "honeymanlogoctv9upj6": {
+      "label": "Honeyman",
+      "w": 50,
+      "h": 54,
+      "accent": "#B88838",
+      "url": ""
+    }
   }
- ],
- "brandGroups": [
-  {
-   "label": "Automobile",
-   "keys": [
-    "mahindra",
-    "tatahitachi",
-    "johndeere",
-    "bkt"
-   ]
-  },
-  {
-   "label": "Electric vehicles",
-   "keys": [
-    "revolt",
-    "kaifeng"
-   ]
-  },
-  {
-   "label": "Hydropower",
-   "keys": [
-    "ghpa",
-    "nasa",
-    "numbur",
-    "panhim"
-   ]
-  },
-  {
-   "label": "Other businesses",
-   "keys": [
-    "manokamana",
-    "kohinoor",
-    "sumo"
-   ]
-  }
- ],
- "branches": [
-  {
-   "id": "head",
-   "label": "Head Office — Naxal",
-   "address": "Naxal, Kathmandu, Nepal"
-  },
-  {
-   "id": "corporate",
-   "label": "Corporate Office — Kantipath",
-   "address": "Kantipath, Kathmandu, Nepal"
-  },
-  {
-   "id": "birgunj",
-   "label": "Birgunj Office",
-   "address": "Birgunj, Parsa, Nepal"
-  },
-  {
-   "id": "other",
-   "label": "Other — type your own",
-   "address": ""
-  }
- ],
- "logos": {
-  "mvdugar": {
-   "label": "MV Dugar Group",
-   "w": 52,
-   "h": 52,
-   "accent": "#ED1821",
-   "url": ""
-  },
-  "mahindra": {
-   "label": "Mahindra",
-   "w": 150,
-   "h": 23,
-   "accent": "#E31937",
-   "url": ""
-  },
-  "johndeere": {
-   "label": "John Deere",
-   "w": 64,
-   "h": 42,
-   "accent": "#367C2B",
-   "url": ""
-  },
-  "bkt": {
-   "label": "BKT Tires",
-   "w": 76,
-   "h": 36,
-   "accent": "#007633",
-   "url": ""
-  },
-  "revolt": {
-   "label": "Revolt",
-   "w": 91,
-   "h": 34,
-   "accent": "#111111",
-   "url": ""
-  },
-  "kaifeng": {
-   "label": "Jiangsu Kaifeng",
-   "w": 58,
-   "h": 46,
-   "accent": "#7A7A7A",
-   "url": ""
-  },
-  "manokamana": {
-   "label": "Manokamana Hire Purchase",
-   "w": 50,
-   "h": 54,
-   "accent": "#02408E",
-   "url": ""
-  },
-  "ghpa": {
-   "label": "Global Hydro Power Associate",
-   "w": 59,
-   "h": 46,
-   "accent": "#E52326",
-   "url": ""
-  },
-  "nasa": {
-   "label": "Nasa HydroPower",
-   "w": 52,
-   "h": 52,
-   "accent": "#1F1F1F",
-   "url": ""
-  },
-  "numbur": {
-   "label": "Numbur Himalaya Hydropower",
-   "w": 56,
-   "h": 49,
-   "accent": "#3C4078",
-   "url": ""
-  },
-  "panhim": {
-   "label": "Pan Himalaya Energy",
-   "w": 63,
-   "h": 43,
-   "accent": "#33367F",
-   "url": ""
-  },
-  "kohinoor": {
-   "label": "Kohinoor Cold Storage",
-   "w": 51,
-   "h": 53,
-   "accent": "#086B2C",
-   "url": ""
-  },
-  "sumo": {
-   "label": "Sumo Construction & Engineering",
-   "w": 54,
-   "h": 50,
-   "accent": "#FD0000",
-   "url": ""
-  },
-  "tatahitachi": {
-   "label": "TATA Hitachi",
-   "w": 123,
-   "h": 24,
-   "accent": "#F44E00",
-   "url": ""
-  }
- }
 }
